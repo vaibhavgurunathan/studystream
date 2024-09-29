@@ -1,0 +1,78 @@
+import os
+from moviepy.editor import ImageClip, AudioFileClip, CompositeVideoClip, VideoFileClip, concatenate_videoclips
+
+import os
+import imageio
+imageio.plugins.ffmpeg.download()
+os.environ["IMAGEIO_FFMPEG_EXE"] = "/opt/homebrew/bin/ffmpeg"
+'''
+Stitches the audio and image together for videos 
+Inputs: Audio files and images for each step of the video 
+Outputs: Video
+'''
+def merge_video(audio_file, image_file, count):
+    # print("count here: ", count)
+    output_file = f'output_video{count}.mp4'
+    
+    # Check if the audio and image files exist
+    if not os.path.exists(audio_file):
+        print(f"Audio file {audio_file} does not exist.")
+        return None
+    if not os.path.exists(image_file):
+        print(f"Image file {image_file} does not exist.")
+        return None
+
+    image = ImageClip(image_file)
+    audio = AudioFileClip(audio_file)
+
+    # Set duration to match the audio length
+    image = image.set_duration(audio.duration)
+    image = image.set_audio(audio)
+
+    video = CompositeVideoClip([image])
+
+    try:
+        # Write the result to a file
+        video.write_videofile(output_file, fps=24)
+    except Exception as e:
+        print(f"Error creating video: {e}")
+    finally:
+        video.close()
+        audio.close()
+
+    return output_file
+
+
+'''
+Merges all the videos together 
+Inputs: Video Files 
+Outputs: Video
+'''
+def final_merge(count):
+    video_clips = []
+
+    for i in range(count):
+        video_file_name = f'output_video{i}.mp4'
+        
+        if os.path.exists(video_file_name):
+            clip = VideoFileClip(video_file_name)
+            video_clips.append(clip)
+        else:
+            print(f"File {video_file_name} does not exist. Skipping.")
+
+    if video_clips:
+        final_video = concatenate_videoclips(video_clips, method="compose")
+        final_video_path = 'merged_video.mp4'
+
+        try:
+            final_video.write_videofile(final_video_path, codec='libx264')
+        except Exception as e:
+            print(f"Error merging videos: {e}")
+        finally:
+            for clip in video_clips:
+                clip.close()
+            final_video.close()
+    else:
+        print("No valid MP4 files found for merging.")
+
+# merge_video('output1.mp3', 'image_2.jpg', 2)
