@@ -7,7 +7,4 @@ Here is my github repo for Study Stream. Study Stream transform textbooks or not
 I will add more when I finish this!
 
 
-Here is my demo video: 
-https://www.youtube.com/watch?v=7_QqKZyKKbo
-
-[![Watch the video](https://img.youtube.com/vi/7_QqKZyKKbo)]([https://youtu.be/T-D1KVIuvjA](https://www.youtube.com/watch?v=7_QqKZyKKbo)
+[![Watch my demo video](https://www.youtube.com/watch?v=7_QqKZyKKbo)
